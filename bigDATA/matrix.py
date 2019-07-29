@@ -1,5 +1,8 @@
-import numpy as np
-import scipy.linalg as linalg
+from numpy.linalg import eig as eig
+from numpy.linalg import inv as inverse
+from scipy.linalg import lu as lu
+from scipy.linalg import svd as svd
+
 
 def evectors(matrix):
     """ Returns the eigenvectors of a given matrix.
@@ -11,7 +14,7 @@ def evectors(matrix):
     ---
     `vecs : np.array` A numpy matrix containing the eigenvectors
     """
-    vals, vecs = np.linalg.eig(matrix)
+    vals, vecs = eig(matrix)
     return vecs
 
 
@@ -25,7 +28,7 @@ def evalues(matrix):
     ---
     `vals : np.array` A numpy vector containing the eigenvalues
     """
-    vals, vecs = np.linalg.eig(matrix)
+    vals, vecs = eig(matrix)
     return vals
 
 
@@ -39,7 +42,7 @@ def inverse(matrix):
     ---
     `inv : np.array` The inverse matrix
     """
-    inv = np.linalg.inv(matrix)
+    inv = inverse(matrix)
     return inv
 
 
@@ -75,7 +78,7 @@ def SVDecomp(matrix):
     `V : np.array` An `n` x `n` orthonormal matrix whose columns are the 
     eigenvectors of `matrix.T @ matrix`
     """
-    U, S, V = linalg.svd(matrix)
+    U, S, V = svd(matrix)
     return U, S, V
 
 
@@ -89,10 +92,10 @@ def LUDecomp(matrix):
     ---
     `P : np.array` The permutation matrix
 
-    `L : np.array` Lower diagonal matrix
+    `L : np.array` Lower triangular matrix
 
-    `U : np.array` Upper diagonal matrix
+    `U : np.array` Upper triangular matrix
     """
-    P, L, U = linalg.lu(matrix)
+    P, L, U = lu(matrix)
     P = P.T
     return P, L, U
