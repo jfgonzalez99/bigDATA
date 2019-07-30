@@ -29,3 +29,11 @@ To install the **bigDATA** package using pip simply run:
 * **`perturb`**: perturbs a system of equations and returns the relative perturbation and error
 * **`optimalFit`**: given two sets of points, finds the optimal shift and rotation to fit the points in matrix `X` onto `Y`
 
+
+## bigDATA.similarity
+
+* **`editDistance`**: returns the number of edits needed to turn string `str1` into string `str2`
+* **`jaccardDistance`**: returns the percentage of elements in set `a` or `b` that are not in both `a` and `b`
+* **`hammingDistance`**: Returns the number of `i`th characters in `str1` that don't match the `i`th character in `str2`
+* **`cosineDistance`**: calculates the cosine distance between lists of numbers `a` and `b`
+* **`lrDistance`**: calculates the L_r distance between `a` and `b` in `r` dimensional space
