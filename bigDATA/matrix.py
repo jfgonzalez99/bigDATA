@@ -1,7 +1,7 @@
 from numpy.linalg import eig, inv, norm
 from numpy.linalg import solve as npsolve
 from numpy.random import rand
-from numpy import diag, shape, array, zeros
+from numpy import diag, shape, zeros
 from scipy.linalg import lu, svd
 
 
@@ -103,6 +103,25 @@ def LUDecomp(matrix):
     P = P.T
     return P, L, U
 
+
+def polarDecomp(matrix):
+    """ Performs a polar decomposition on a given matrix and breaks down the matrix into its rotating and stretching components.
+    Args
+    ---
+    `matrix : np.array` A numpy matrix
+    
+    Returns
+    ---
+    `rotate : np.array` The rotation matrix
+
+    `stretch : np.array` The stretch matrix
+    """
+    U,S,V = SVDecomp(matrix)
+
+    rotate = U@V.T
+    stretch = U@S@U.T
+
+    return rotate, stretch
 
 def random(height, width):
     """ Returns a random matrix of a given size.

@@ -23,6 +23,7 @@ To install the **bigDATA** package using pip simply run:
 * **`evectors`**: returns the covariance matrix of a matrix
 * **`SVDecomp`**: performs a singular value decomposition
 * **`LUDecomp`**: performs an LU decomposition
+* **`polarDecomp`**: performs a polar decomposition on a given matrix and breaks down the matrix into its rotating and stretching components
 * **`solve`**: solves a linear system of equations
 * **`solveMany`**: Solves for many `x`s in a system of linear equations in the form of `Ax=b` where multiple `b`'s are given
 * **`perturb`**: perturbs a system of equations and returns the relative perturbation and error
