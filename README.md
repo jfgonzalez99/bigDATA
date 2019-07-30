@@ -1,6 +1,6 @@
 # bigDATA
 
-A python library for big data analysis
+A python library for big data analysis. This package is a collection of functions that I have found to be useful in my coursework on big data and machine learning.
 
 ## Requirements and Installation
 
