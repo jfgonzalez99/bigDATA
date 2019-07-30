@@ -1,7 +1,8 @@
 from numpy.linalg import eig as eig
-from numpy.linalg import inv as inverse
+from numpy.linalg import inv as inv
 from scipy.linalg import lu as lu
 from scipy.linalg import svd as svd
+from numpy.random import rand as rand
 
 
 def evectors(matrix):
@@ -42,8 +43,8 @@ def inverse(matrix):
     ---
     `inv : np.array` The inverse matrix
     """
-    inv = inverse(matrix)
-    return inv
+    invMatrix = inv(matrix)
+    return invMatrix
 
 
 def covarianceMatrix(matrix):
@@ -99,3 +100,19 @@ def LUDecomp(matrix):
     P, L, U = lu(matrix)
     P = P.T
     return P, L, U
+
+
+def random(height, width):
+    """ Returns a random matrix of a given size.
+    Args
+    ---
+    `height : int` The height of the returned matrix
+    
+    `width : int` The width of the returned matrix
+    
+    Returns
+    ---
+    `randomMatrix : np.array` A random matrix of the desired height and width
+    """
+    randomMatrix = rand(height, width)
+    return randomMatrix
