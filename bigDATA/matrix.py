@@ -1,8 +1,7 @@
-from numpy.linalg import eig as eig
-from numpy.linalg import inv as inv
-from scipy.linalg import lu as lu
-from scipy.linalg import svd as svd
-from numpy.random import rand as rand
+from numpy.linalg import eig, inv
+from numpy.linalg import solve as npsolve
+from numpy.random import rand
+from scipy.linalg import lu, svd
 
 
 def evectors(matrix):
@@ -15,8 +14,8 @@ def evectors(matrix):
     ---
     `vecs : np.array` A numpy matrix containing the eigenvectors
     """
-    vals, vecs = eig(matrix)
-    return vecs
+    vals_vecs = eig(matrix)
+    return vals_vecs[1]
 
 
 def evalues(matrix):
@@ -29,8 +28,8 @@ def evalues(matrix):
     ---
     `vals : np.array` A numpy vector containing the eigenvalues
     """
-    vals, vecs = eig(matrix)
-    return vals
+    vals_vecs = eig(matrix)
+    return vals_vecs[0]
 
 
 def inverse(matrix):
@@ -116,3 +115,19 @@ def random(height, width):
     """
     randomMatrix = rand(height, width)
     return randomMatrix
+
+
+def solve(A, b):
+    """ Solve for `x` a system of linear equations in the form of `Ax=b`.
+    Args
+    ---
+    `A : np.array` The left hand matrix
+    
+    `b : np.array` The right hand vecto
+    
+    Returns
+    ---
+    `x : np.array` The solution vector
+    """
+    x = npsolve(A,b)
+    return x
