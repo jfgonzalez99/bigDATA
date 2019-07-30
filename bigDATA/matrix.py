@@ -1,6 +1,7 @@
 from numpy.linalg import eig, inv, norm
 from numpy.linalg import solve as npsolve
 from numpy.random import rand
+from numpy import diag, shape, array, zeros
 from scipy.linalg import lu, svd
 
 
@@ -79,6 +80,8 @@ def SVDecomp(matrix):
     eigenvectors of `matrix.T @ matrix`
     """
     U, S, V = svd(matrix)
+    S = diag(S)
+    V = V.T
     return U, S, V
 
 
@@ -131,6 +134,30 @@ def solve(A, b):
     """
     x = npsolve(A,b)
     return x
+
+
+def solveMany(A, B):
+    """ Solves for many `x`s in a system of linear equations in the form of `Ax=b` where multiple `b`'s are given. Uses LU decomposition to bring time down from `O(n^3/3)` to `O(n^2)`.
+    Args
+    ---
+    `A : np.array` The left hand matrix
+    
+    `B : np.array` A matrix whose columns are composed of all the right hand vectors
+    
+    Returns
+    ---
+    `X : np.array` A matrix whose columns are composed of all the solution vectors that correspond with their respective column in `B`
+    """
+    P,L,U = LUDecomp(A)
+    N = len(B[0])
+    X = zeros(shape(B))
+
+    for i in range(N):
+        c = solve(L, P @ B[:,i])
+        x_i = solve(U, c)
+        X[:,i] = x_i
+
+    return X
 
 
 def perturb(A,b,delta_b):
