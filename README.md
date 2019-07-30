@@ -24,4 +24,5 @@ To install the **bigDATA** package using pip simply run:
 * **`SVDecomp`**: performs a singular value decomposition
 * **`LUDecomp`**: performs an LU decomposition
 * **`solve`**: solves a linear system of equations
+* **`perturb`**: perturbs a system of equations and returns the relative perturbation and error
 

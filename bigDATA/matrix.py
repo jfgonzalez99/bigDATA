@@ -1,4 +1,4 @@
-from numpy.linalg import eig, inv
+from numpy.linalg import eig, inv, norm
 from numpy.linalg import solve as npsolve
 from numpy.random import rand
 from scipy.linalg import lu, svd
@@ -123,7 +123,7 @@ def solve(A, b):
     ---
     `A : np.array` The left hand matrix
     
-    `b : np.array` The right hand vecto
+    `b : np.array` The right hand vector
     
     Returns
     ---
@@ -131,3 +131,29 @@ def solve(A, b):
     """
     x = npsolve(A,b)
     return x
+
+
+def perturb(A,b,delta_b):
+    """ Perturbs the system `Ax=b` by `delta_b`.
+    Args
+    ---
+    `A : np.array` The left hand matrix
+    
+    `b : np.array` The right hand vector
+
+    `delta_b : np.array` The perturbing vector
+    
+    Returns
+    ---
+    `relError : float` The relative error to the solution caused by `delta_b`
+    
+    `relPerturbation : float` The relative perturbation of `b` caused by `delta_b`
+    """
+    x1 = solve(A, b)
+    x2 = solve(A, b + delta_b)
+    delta_x = x2 - x1
+
+    relError = norm(delta_x)/norm(x1)
+    relPerturbation = norm(delta_b)/norm(b)
+
+    return relError, relPerturbation
