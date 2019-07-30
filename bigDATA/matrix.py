@@ -1,9 +1,9 @@
-from numpy.linalg import eig, inv, norm
+from numpy import array, diag, mean, shape, sign, zeros
+from numpy.linalg import det, eig, inv, norm
 from numpy.linalg import solve as npsolve
 from numpy.random import rand
-from numpy import diag, shape, zeros
 from scipy.linalg import lu, svd
-
+import matplotlib.pyplot as plt
 
 def evectors(matrix):
     """ Returns the eigenvectors of a given matrix.
@@ -47,19 +47,20 @@ def inverse(matrix):
     return invMatrix
 
 
-def covarianceMatrix(matrix):
-    """ Returns the covariance matrix of a given matrix.
+def covarianceMatrix(A, B):
+    """ Returns the covariance matrix of two given matrices `A` and `B`.
     Args
     ---
-    `matrix : np.array` A numpy matrix
+    `A : np.array` A `m` x `n` numpy matrix
+    `B : np.array` A `m` x `n` numpy matrix
     
     Returns
     ---
     `cMatrix : np.array` The covariance matrix
     """
-    N = len(matrix[0])
-    cMatrix = (matrix @ matrix.T) / N
-    return cMatrix
+    N = len(A[0])
+    C = (A @ B.T) / N
+    return C
 
 
 def SVDecomp(matrix):
@@ -123,6 +124,7 @@ def polarDecomp(matrix):
 
     return rotate, stretch
 
+
 def random(height, width):
     """ Returns a random matrix of a given size.
     Args
@@ -179,7 +181,7 @@ def solveMany(A, B):
     return X
 
 
-def perturb(A,b,delta_b):
+def perturb(A, b, delta_b):
     """ Perturbs the system `Ax=b` by `delta_b`.
     Args
     ---
@@ -203,3 +205,67 @@ def perturb(A,b,delta_b):
     relPerturbation = norm(delta_b)/norm(b)
 
     return relError, relPerturbation
+
+
+def optimalFit(X, Y, plot=False):
+    """ Given two sets of points, finds the optimal shift and rotation to fit the points in matrix `X` onto `Y`.
+    Args
+    ---
+    `X : np.array` An `m` x `n` matrix that represents the set of points to be shifted and rotated
+    
+    `Y : np.array` An `m` x `n` matrix that represents the desired set of points to be shifted onto
+
+    `plot : bool` If set to true and data is 2-dimensional will plot the points and ideal transformation
+    
+    Returns
+    ---
+    `X_Translation : np.array` An `m` x `1` vector that is the optimal translation of `X` onto `Y`
+
+    `X_Rotation : np.array` An `m` x `m` matrix that is the optimal rotation of `X` onto `Y`
+
+    `X_Translated_Rotated : np.array` `X` after the optimal shift and rotation has been applied
+    """
+    M = len(X[:,0])
+    N = len(X[0])
+
+    # Find center of mass of X and Y
+    X_Center = array([mean(X[i]) for i in range(M)])
+    Y_Center = array([mean(Y[i]) for i in range(M)])
+
+    # Optimal shift of X
+    X_Translation = Y_Center - X_Center
+
+    # Shift X to optimal position
+    X_Translated = zeros(shape(X))
+    for i in range(N):
+        X_Translated[:,i] = X[:,i] + X_Translation
+
+    # Find optimal rotation of X
+    C = Y @ X_Translated.T
+    SVD = SVDecomp(C)
+    U,V = SVD[0], SVD[2]
+    X_Rotation = U @ V.T
+
+    # Rotate X to optimal position
+    X_Translated_Rotated = zeros(shape(X))
+    for i in range(N):
+        X_Translated_Rotated[:,i] = X_Rotation @ X_Translated[:,i]
+
+    if plot and (M == 2):
+        # Plot original points
+        subplt1 = plt.subplot(1, 2, 1)
+        hl1, = plt.plot(X[0], X[1], '.', color="red", markersize=7)
+        hl2, = plt.plot(Y[0], Y[1], '.', color="blue", markersize=7)
+        plt.legend([hl1, hl2], ['X', 'Y'])
+        plt.title("Original Points")\
+
+        # Plot tranformed points
+        plt.subplot(1, 2, 2, sharex=subplt1, sharey=subplt1)
+        hl3, = plt.plot(X_Translated_Rotated[0], X_Translated_Rotated[1], '.', 
+                        color="red", markersize=7)
+        hl4, = plt.plot(Y[0], Y[1], '.', color="blue", markersize=7)
+        plt.legend([hl3, hl4], ['X_Translated_Rotated', 'Y'])
+        plt.title("Optimal Transformation")
+        plt.show()
+
+    return X_Translation, X_Rotation, X_Translated_Rotated

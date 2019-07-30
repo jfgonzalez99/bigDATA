@@ -27,4 +27,5 @@ To install the **bigDATA** package using pip simply run:
 * **`solve`**: solves a linear system of equations
 * **`solveMany`**: Solves for many `x`s in a system of linear equations in the form of `Ax=b` where multiple `b`'s are given
 * **`perturb`**: perturbs a system of equations and returns the relative perturbation and error
+* **`optimalFit`**: given two sets of points, finds the optimal shift and rotation to fit the points in matrix `X` onto `Y`
 
