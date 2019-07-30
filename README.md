@@ -37,3 +37,11 @@ To install the **bigDATA** package using pip simply run:
 * **`hammingDistance`**: Returns the number of `i`th characters in `str1` that don't match the `i`th character in `str2`
 * **`cosineDistance`**: calculates the cosine distance between lists of numbers `a` and `b`
 * **`lrDistance`**: calculates the L_r distance between `a` and `b` in `r` dimensional space
+
+
+## bigDATA.ml
+
+* **`sigmoid`**, **`sigmoid_prime`**, **`softmax`**, **`softmax_prime`**, and **`tansig`** activation functions
+* **`C`**: cost function
+* **`feed_forward`**: feed input forward through a neural network
+* **`back_propagation`**: performs a single back propagation iteration
