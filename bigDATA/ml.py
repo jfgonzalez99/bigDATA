@@ -1,5 +1,5 @@
 from numpy import exp as npexp
-from numpy import diagflat
+from numpy import diagflat, array
 
 
 def sigmoid(x):
@@ -45,14 +45,19 @@ def feed_forward(x, W, B, activation, classification):
     Args
     ---
     `x : np.array` input vector to be classified
+
     `W : np.array[]` weights of neural network
+
     `B : np.array` biases of neural network
+
     `activation : function` function used on all layers except output
+
     `classification : function` function used on output
 
     Returns 
     ---
     `A : np.array[]` values at each step after being passed through activation function
+
     `Z : np.array[]` values at each step before being passed through activation function
     """
     N = len(B)
@@ -78,21 +83,25 @@ def back_propagation(x, y, W, B, learning_rate):
     Args
     ---
     `x : np.array` input vector to be classified
+
     `y : np.array` true classification labels
+
     `W : np.array[]` weights of neural network
+
     `B : np.array` biases of neural network
+
     `learning_rate : int` the learning rate of the neural network 
 
     Returns
     ---
     `W : np.array[]` updated weights
+
     `B : np.array[]` updated biases
     """
     # Feed forward
     A, Z = feed_forward(x, W, B, sigmoid, softmax)
 
-    # Calculate cost and dcost
-    # cost = C(A[-1], y)
+    # Calculate dcost
     dcost = A[-1] - y
 
     nabla_B = []
@@ -104,9 +113,9 @@ def back_propagation(x, y, W, B, learning_rate):
     for i in range(N):
         step = N - 1 - i
         if i == 0:
-           delta_i = softmax_prime(Z[step]) @ dcost
+            delta_i = softmax_prime(Z[step])@dcost
         else:
-            delta_i = sigmoid_prime(Z[step]) @ dcost
+            delta_i = (W[step + 1].T@nabla_B[0])*sigmoid_prime(Z[step])
 
         nabla_bi = delta_i
         nabla_wi = delta_i @ A[step].T
