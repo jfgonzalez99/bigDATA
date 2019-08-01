@@ -4,9 +4,9 @@ A python library for big data analysis. This package is a collection of function
 
 ## Requirements and Installation
 
-This package requires that **numpy** and **scipy** be installed. Using pip this can be done with the following command:
+This package requires that **numpy**, **scipy**, and **matplotlib** be installed. Using pip this can be done with the following command:
 
-```pip install numpy scipy```
+```pip install numpy scipy matplotlib```
 
 or see [Scipy's website](https://www.scipy.org/install.html) for more information on installation.
 
