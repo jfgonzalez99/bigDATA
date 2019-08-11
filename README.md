@@ -42,6 +42,7 @@ To install the **bigDATA** package using pip simply run:
 ## bigDATA.ml
 
 * **`sigmoid`**, **`sigmoid_prime`**, **`softmax`**, **`softmax_prime`**, and **`tansig`** activation functions
-* **`C`**: cost function
-* **`feed_forward`**: feed input forward through a neural network
-* **`back_propagation`**: performs a single back propagation iteration
+* **`cost`**: cost function
+* **`Classification`**:
+    * **`feed_forward`**: feed input forward through a neural network
+    * **`back_propagation`**: performs a single back propagation iteration

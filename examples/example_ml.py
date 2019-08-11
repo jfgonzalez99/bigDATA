@@ -2,7 +2,7 @@ import bigDATA.ml as ml
 import numpy as np
 
 # Classify Xinput using given weights and biases
-xInput = np.array([[8], [7]])
+x = np.array([[8], [7]])
 
 w2 = np.array([[-0.147961,  2.73431],
                [1.99734,    0.91873]])
@@ -19,21 +19,16 @@ b4 = np.array([[-4.93757],
                [-4.6388],
                [9.94525]])
 
-W = [w2,w3,w4]
-B = [b2,b3,b4]
+W = [w2, w3, w4]
+B = [b2, b3, b4]
 
-A, Z = ml.feed_forward(xInput, W, B, ml.sigmoid, ml.softmax)
+cNetwork = ml.Classification(W, B, ml.sigmoid)
 
-for i in range(len(A)):
-    print("a_" + str(i) + ": ")
-    print(A[i])
+# y is the true classification of x
+y = cNetwork.feed_forward(x)
 
-for i in range(len(Z)):
-    print("z_" + str(i + 1) + ": ")
-    print(Z[i])
-
-# Save true classification for later
-y = A[-1]
+print("True classification:")
+print(y)
 
 # Perturb some of the weights and biases to see effect of back propagation
 W_perturbed = W
@@ -44,28 +39,25 @@ for i in range(2):
     W_perturbed[i] = W[i] + perturbation
     B_perturbed[i] = B[i] + perturbation
 
+# Create new network with perturbed weights and biases
+perturbedNetwork = ml.Classification(W_perturbed, B_perturbed, ml.sigmoid)
+
 # Feed perturbed weights and biases forward
-A_perturbed, Z_perturbed = ml.feed_forward(
-    xInput, W_perturbed, B_perturbed, ml.sigmoid, ml.softmax)
+classification_0 = perturbedNetwork.feed_forward(x)
 
 # Perform one back propagation iteration
-W_updated, B_updated = ml.back_propagation(
-    xInput, y, W_perturbed, B_perturbed, 2500)
+perturbedNetwork.back_propagation(x, y, 2500)
 
 # Feed forward and update values for A and Z
-A_updated, Z_updated = ml.feed_forward(
-    xInput, W_updated, B_updated, ml.sigmoid, ml.softmax)
+classification_1 = perturbedNetwork.feed_forward(x)
 
 # Compare values before and after back propagation
+print("Prior classification:")
+print(classification_0)
+print("New classification:")
+print(classification_1)
+
 print("Prior cost:")
-print(ml.C(A_perturbed[-1], y))
+print(ml.cost(classification_0, y))
 print("New cost:")
-print(ml.C(A_updated[-1], y))
-print("Prior z4:")
-print(Z_perturbed[-1])
-print("New z4:")
-print(Z_updated[-1])
-print("Prior a4:")
-print(A_perturbed[-1])
-print("New a4:")
-print(A_updated[-1])
+print(ml.cost(classification_1, y))

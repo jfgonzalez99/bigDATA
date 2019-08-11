@@ -4,7 +4,7 @@ from numpy import diagflat, array
 
 def sigmoid(x):
     """ Sigmoid function with input vector x """
-    sig = 1 /(1 + npexp(-x))
+    sig = 1 / (1 + npexp(-x))
     return sig
 
 
@@ -34,98 +34,102 @@ def tansig(x):
     return tsig
 
 
-def C(aL, y):
+def cost(aL, y):
     """ Cost function """
-    cost = 0.5*sum((aL-y)**2)
-    return cost
+    c = 0.5*sum((aL-y)**2)
+    return c
 
 
-def feed_forward(x, W, B, activation, classification):
-    """ Feed input forward through network. 
-    Args
-    ---
-    `x : np.array` input vector to be classified
+class Classification:
+    def __init__(self, W, B, activation):
+        """ Setup your classification network
+        Args
+        ---
+        `W : np.array[]` weights of neural network
 
-    `W : np.array[]` weights of neural network
+        `B : np.array` biases of neural network
 
-    `B : np.array` biases of neural network
-
-    `activation : function` function used on all layers except output
-
-    `classification : function` function used on output
-
-    Returns 
-    ---
-    `A : np.array[]` values at each step after being passed through activation function
-
-    `Z : np.array[]` values at each step before being passed through activation function
-    """
-    N = len(B)
-
-    # Add a1 input layer
-    A = [x]
-    Z = []
-
-    for i in range(N):
-        z_i = W[i] @ A[-1] + B[i]
-        if i == (N - 1):
-            a_i = classification(z_i)
+        `activation : function` function used on all layers except output
+        """
+        self.W = W
+        self.B = B
+        self.activation = activation
+        if activation.__name__ == "sigmoid":
+            self.activation_prime = sigmoid_prime
         else:
-            a_i = activation(z_i)
-        A.append(a_i)
-        Z.append(z_i)
+            print("WARNING: This activation function is not yet fully supported.")
 
-    return A, Z
+    def feed_forward(self, x):
+        """ Feed input forward through network. 
+        Args
+        ---
+        `x : np.array` input vector to be classified
 
+        Returns 
+        ---
+        `classification : np.array` the classification of the input vector
+        """
+        N = len(self.B)
 
-def back_propagation(x, y, W, B, learning_rate):
-    """ Performs a single back propagation iteration.
-    Args
-    ---
-    `x : np.array` input vector to be classified
+        # A is the values at each step after being passed through activation function
+        # Add a1 input layer
+        A = [x]
+        # Z is the values at each step before being passed through activation function
+        Z = []
 
-    `y : np.array` true classification labels
+        for i in range(N):
+            z_i = self.W[i] @ A[-1] + self.B[i]
+            if i == (N - 1):
+                a_i = softmax(z_i)
+            else:
+                a_i = self.activation(z_i)
+            A.append(a_i)
+            Z.append(z_i)
 
-    `W : np.array[]` weights of neural network
+        # Store for user's use
+        self.A = A
+        self.Z = Z
 
-    `B : np.array` biases of neural network
+        classification = A[-1]
+        return classification
 
-    `learning_rate : int` the learning rate of the neural network 
+    def back_propagation(self, x, y, learning_rate):
+        """ Performs a single back propagation iteration.
+        Args
+        ---
+        `x : np.array` input vector to be classified
 
-    Returns
-    ---
-    `W : np.array[]` updated weights
+        `y : np.array` true classification labels
 
-    `B : np.array[]` updated biases
-    """
-    # Feed forward
-    A, Z = feed_forward(x, W, B, sigmoid, softmax)
+        `learning_rate : int` the learning rate of the neural network
+        """
+        # Feed forward if not already done
+        classification = self.feed_forward(x)
 
-    # Calculate dcost
-    dcost = A[-1] - y
+        # Calculate dcost
+        dcost = classification - y
 
-    nabla_B = []
-    nabla_W = []
+        nabla_B = []
+        nabla_W = []
 
-    N = len(Z)
+        N = len(self.Z)
 
-    # Back propagation
-    for i in range(N):
-        step = N - 1 - i
-        if i == 0:
-            delta_i = softmax_prime(Z[step])@dcost
-        else:
-            delta_i = (W[step + 1].T@nabla_B[0])*sigmoid_prime(Z[step])
+        # Back propagation
+        for i in range(N):
+            step = N - 1 - i
+            if i == 0:
+                delta_i = softmax_prime(self.Z[step])@dcost
+            else:
+                delta_i = (self.W[step + 1].T@nabla_B[0]) * \
+                    self.activation_prime(self.Z[step])
 
-        nabla_bi = delta_i
-        nabla_wi = delta_i @ A[step].T
+            nabla_bi = delta_i
+            nabla_wi = delta_i @ self.A[step].T
 
-        nabla_B.insert(0, nabla_bi)
-        nabla_W.insert(0, nabla_wi)
+            nabla_B.insert(0, nabla_bi)
+            nabla_W.insert(0, nabla_wi)
 
-    # Adjusts weights and biases
-    for i in range(N):
-        W[i] -= learning_rate * nabla_W[i]
-        B[i] -= learning_rate * nabla_B[i]
-
-    return W, B
+        # Adjusts weights and biases
+        for i in range(N):
+            self.W[i] -= learning_rate * nabla_W[i]
+            self.B[i] -= learning_rate * nabla_B[i]
