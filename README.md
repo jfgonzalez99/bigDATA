@@ -46,3 +46,6 @@ To install the **bigDATA** package using pip simply run:
 * **`Classification`**:
     * **`feed_forward`**: feed input forward through a neural network
     * **`back_propagation`**: performs a single back propagation iteration
+* **`KNN`**:
+    * **`classify`**: k nearest neighbors classification with discrete labels
+    * **`kRegression`**: locally weighted kernel regression
