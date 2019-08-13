@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="bigDATA",
-    version="1.2.0",
+    version="1.3.0",
     author="Justin Gonzalez",
     description="A python library for big data analysis",
     long_description=long_description,
